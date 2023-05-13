@@ -1,2 +1,3 @@
-# CodingTest
-This is a auto push repository for Baekjoon Online Judge created with [BaekjoonHub](https://github.com/BaekjoonHub/BaekjoonHub).
+# ForCodingTest
+#파이썬 알고리즘 스터디
+#코테는 C++
