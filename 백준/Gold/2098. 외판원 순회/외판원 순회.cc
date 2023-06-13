@@ -1,58 +1,88 @@
 #include <iostream>
-#include <cstring>
+#include <vector>
+#include <cmath>
 #define INF 987654321
 using namespace std;
 
-int N;
-int arr[20][20];
-int dp[20][1<<20];
+int N, M, minLength = INF;
+typedef vector<vector<int>> MAT;
 
-int go_(int curr,int visited) {
-    
-    if(visited==(1<<N)-1) {
-        if(arr[curr][0]==0) {
-            return INF;
-        }
-        else {
-            return arr[curr][0];
-        }
-    }
-    
-    if(dp[curr][visited]!=-1) {
-        return dp[curr][visited];
-    }
-    dp[curr][visited]=INF;
-    
-    for(int i=0;i<N;i++) {
-        
-        if(visited & (1<<i)) {
-            continue;
-        }
-        
-        if(arr[curr][i]==0) {
-            continue;
-        }
-        
-        dp[curr][visited]=min(dp[curr][visited],go_(i, visited|(1<<i))+arr[curr][i]);
-    }
-    
-    return dp[curr][visited];
+int diff(int A, int j) {
+    return (A & ~(1 << (j - 2)));
 }
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr);
-    
-    cin >> N;
-    
-    for(int i=0;i<N;i++) {
-        for(int j=0;j<N;j++) {
-            cin >> arr[i][j];
+
+bool isIn(int i, int A) {
+    return (A & (1 << (i - 2))) != 0;
+}
+
+int minimum(int i, int& minJ, int A, MAT& W, MAT& D) {
+    int minV = INF;
+    for (int j = 2; j < N + 1; j++) {
+        if (!isIn(j, A)) continue;
+        int value = W[i][j] + D[j][diff(A, j)];
+        if (minV > value) {
+            minV = value;
+            minJ = j;
         }
     }
-    
-    memset(dp, -1, sizeof(dp));
-    cout << go_(0,1) << "\n";
-    
-    return 0;
+    return minV;
+}
+
+int count(int A) {
+    int cnt = 0;
+    for (; A != 0; A >>= 1)
+        if (A & 1) cnt++;
+    return cnt;
+}
+
+void travel(MAT W, MAT& D, MAT& P) {
+    int subsetSize = pow(2, N - 1);
+    for (int i = 2; i < N + 1; i++) D[i][0] = W[i][1];
+
+    int i, j, A;
+    for (int k = 1; k < N - 1; k++) {
+        for (A = 0; A < subsetSize; A++) {
+            if (count(A) != k) continue;
+            for (i = 2; i < N + 1; i++) {
+                if (isIn(i, A)) continue;
+                D[i][A] = minimum(i, j, A, W, D);
+                P[i][A] = j;
+            }
+        }
+    }
+
+    A = subsetSize - 1;
+    D[1][A] = minimum(1, j, A, W, D);
+    P[1][A] = j;
+    minLength = D[1][A];
+}
+
+void tour(int x, int y, MAT& P) {
+    int k = P[x][y];
+    if (y == 0) cout << " 1" << endl;
+    else {
+        cout << " " << k;
+        tour(k, diff(y, k), P);
+    }
+}
+
+int main() {
+    cin >> N;
+    int subsetSize = pow(2, N - 1);
+    MAT W(N + 1, vector<int>(N + 1, INF));
+    MAT D(N + 1, vector<int>(subsetSize, INF));
+    MAT P(N + 1, vector<int>(subsetSize));
+
+    for (int i = 0; i < N; i++) {
+        for(int j=0;j<N;j++) {
+            cin >> W[i+1][j+1];
+            
+            if(W[i+1][j+1]==0) {
+                W[i+1][j+1]=INF;
+            }
+        }
+    }
+
+    travel(W, D, P);
+    cout << minLength << endl;
 }
