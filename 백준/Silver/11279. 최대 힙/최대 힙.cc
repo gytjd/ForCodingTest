@@ -1,32 +1,36 @@
-#include<iostream>
-#include<queue>
+#include <iostream>
+#include <queue>
+#include <vector>
 
 using namespace std;
 
 int N;
-priority_queue<int> pq;
+priority_queue<long long,vector<long long>,less<>> q;
 
 int main() {
-    
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
     
     cin >> N;
-    while (N--) {
-        int x;
-        cin >> x;
-        if (x == 0) {
-            if (pq.empty())
+    
+    for(int i=0;i<N;i++) {
+        int data;
+        cin >> data;
+        
+        if(data==0) {
+            if(q.empty()) {
                 cout << 0 << "\n";
-               
-            else {
-                cout << pq.top() << "\n";
-                pq.pop();
             }
-        } else {
-            pq.push(x);
+            else {
+                cout << q.top() << "\n";
+                q.pop();
+            }
+        }
+        else {
+            q.push(data);
         }
     }
+    
     return 0;
 }
