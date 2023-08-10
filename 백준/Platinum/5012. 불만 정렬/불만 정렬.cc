@@ -6,9 +6,7 @@ using namespace std;
 int N;
 int arr[MAX_SIZE];
 int tree[MAX_SIZE*4];
-
-int idxA[MAX_SIZE];
-int idxB[MAX_SIZE];
+int idx[MAX_SIZE];
 
 void update_(int node,int start,int end,int idx) {
     
@@ -52,21 +50,20 @@ int main() {
     }
     
     for(int i=0;i<N;i++) {
-        idxA[i]=sum_(1, 1, N, arr[i]+1, N);
+        idx[i]=sum_(1, 1, N, arr[i]+1, N);
         update_(1, 1, N, arr[i]);
     }
     
     memset(tree, 0, sizeof(tree));
+    long long ret=0;
+    
     for(int i=N-1;i>=0;i--) {
-        idxB[i]=sum_(1, 1,N, 1, arr[i]-1);
+        ret+=(1LL*idx[i]*sum_(1, 1,N, 1, arr[i]-1));
         update_(1, 1, N, arr[i]);
     }
     
-    long long ret=0;
-    for(int i=0;i<N;i++) {
-        ret+=(1LL*idxA[i]*idxB[i]);
-    }
     cout << ret << "\n";
     
     return 0;
 }
+
