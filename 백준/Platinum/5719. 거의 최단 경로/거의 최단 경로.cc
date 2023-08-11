@@ -1,96 +1,143 @@
-#include <iostream> 
+#include <iostream>
+#include <vector>
 #include <queue>
-#include <vector> 
-#include <string.h> 
-#include <limits.h>
-#include <stack> 
-#define MAX 501 
-using namespace std; 
+#include <cstring>
 
-int N, M ; 
-int source, destination ; 
-int a, b, c; 
-int dist[MAX] ;
-vector<int> prev_v[MAX] ;
-int v[MAX][MAX] ; 
-vector<int> conn[MAX] ; 
-void dijkstra(int start) {  
-    priority_queue<pair<int, int>, vector<pair<int, int> >, greater<pair<int, int> > > pq ; 
-    // weight, vertex  
-    for (int i = 0 ; i < N ; i++) dist[i] = INT_MAX ; 
+#define MAX_SIZE 504
+#define INF 1e9+7
 
-    dist[start] = 0 ; 
-    pq.push(make_pair(0, start)); 
+using namespace std;
 
-    while(!pq.empty()) {
-        int weight = pq.top().first ; 
-        int curr_v = pq.top().second ;
-        pq.pop(); 
+struct Node {
+    int weight,start,prev;
+};
 
-        for (int i = 0 ; i < conn[curr_v].size() ; i++) { 
-            int next_v = conn[curr_v][i]; 
-            int next_w = v[curr_v][next_v] ; 
+struct cmp {
+    bool operator()(Node &a,Node &b) {
+        return a.weight>b.weight;
+    }
+};
 
-            if (v[curr_v][next_v] != 0 && dist[next_v] > next_w + weight) { 
-                dist[next_v] = next_w + weight ; 
-                prev_v[next_v].clear() ;
-                prev_v[next_v].push_back(curr_v);  
-                pq.push(make_pair(dist[next_v], next_v)) ;
-            }
-            else if (v[curr_v][next_v] != 0 && dist[next_v] == next_w + weight) {
-                prev_v[next_v].push_back(curr_v);  
-            }
-        }
+int N,M;
+int S,E;
+int visited[MAX_SIZE];
+int dist[MAX_SIZE];
+int arr[MAX_SIZE][MAX_SIZE];
+vector<int> prev_[MAX_SIZE];
+
+void init_() {
+    for(int i=0;i<N;i++) {
+        dist[i]=INF;
     }
 }
 
-void remove_trace() {
-    queue<int> q ; 
-    q.push(destination) ; 
-    bool visited[MAX] = {false, } ; 
-    visited[destination] = true; 
-    while(!q.empty()) { 
-        int curr = q.front(); q.pop() ;
-
-        for (int i = 0 ; i < prev_v[curr].size(); i++) {
-            int prev = prev_v[curr][i]; 
-            v[prev][curr] = 0 ; 
-
-            if(!visited[prev]) { 
-                q.push(prev);  
-                visited[prev] = true; 
-            }
-        }
-    }
-}
-
-int main(void) {    
-    ios::sync_with_stdio(false); 
-    cin.tie(0); cout.tie(0); 
-
-    while(1) {    
-        cin >> N >> M ; 
-        if ( N == 0 && M == 0 ) break; 
-        cin >> source >> destination ; 
-
-        for (int i = 0 ; i < M ; i++) {
-            cin >> a >> b >> c ; 
-            conn[a].push_back(b); 
-            v[a][b] = c ; 
+void Dijkstra(int start) {
+    int weight,prev;
+    priority_queue<Node,vector<Node>,cmp> q;
+    q.push({0,start,0});
+    dist[start]=0;
+    
+    while(!q.empty()) {
+        weight=q.top().weight;
+        start=q.top().start;
+        prev=q.top().prev;
+        q.pop();
+        
+        if(dist[start]<weight) {
+            continue;
         }
         
-        dijkstra(source); 
-        remove_trace() ;  
-        dijkstra(source); 
-
-        if (dist[destination] == INT_MAX) cout << "-1" << '\n' ;
-        else cout << dist[destination] << '\n'; 
-
-        for(int i = 0; i < MAX; i++){
-            memset(v[i], 0, sizeof(int) * MAX);
-            if (conn[i].size() > 0) conn[i].clear(); 
-            if (prev_v[i].size() > 0) prev_v[i].clear() ; 
+        for(int i=0;i<N;i++) {
+            if(arr[start][i]!=INF) {
+                if(dist[i]>dist[start]+arr[start][i]) {
+                    dist[i]=dist[start]+arr[start][i];
+                    prev_[i].clear();
+                    prev_[i].push_back(start);
+                    q.push({dist[i],i,start});
+                }
+                else if(dist[i]==dist[start]+arr[start][i]) {
+                    prev_[i].push_back(start);
+                }
+            }
         }
     }
-    return 0; 
+}
+
+void remove_Edge() {
+    
+    int start;
+    queue<int> q;
+    q.push(E);
+    visited[E]=1;
+    
+    while(!q.empty()) {
+        start=q.front();
+        q.pop();
+        
+        for(int temp:prev_[start]) {
+            arr[temp][start]=INF;
+            
+            if(visited[temp]==0) {
+                q.push(temp);
+                visited[temp]=1;
+            }
+            
+        }
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    
+    while(true) {
+        cin >> N >> M;
+        if(N==0 and M==0) {
+            break;
+        }
+        
+        init_();
+        memset(visited,0,sizeof(visited));
+        for(int i=0;i<N;i++) {
+            prev_[i].clear();
+        }
+        for(int i=0;i<N;i++) {
+            for(int j=0;j<N;j++) {
+                arr[i][j]=INF;
+            }
+        }
+        
+        
+        cin >> S >> E;
+        for(int i=0;i<M;i++) {
+            int start,end,weight;
+            cin >> start >> end >> weight;
+            arr[start][end]=min(arr[start][end],weight);
+//            arr[start][end]=weight;
+        }
+        
+        Dijkstra(S);
+        
+//        for(int i=0;i<N;i++) {
+//            cout << i << " = ";
+//            for(int temp:prev_[i]) {
+//                cout << temp << " ";
+//            }
+//            cout << "\n";
+//        }
+//        cout << "\n";
+        remove_Edge();
+        init_();
+        Dijkstra(S);
+        
+        if(dist[E]==INF) {
+            cout << -1 << "\n";
+        }
+        else {
+            cout << dist[E] << "\n";
+        }
+    }
+    
+    return 0;
 }
