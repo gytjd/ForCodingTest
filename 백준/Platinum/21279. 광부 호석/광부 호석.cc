@@ -6,7 +6,7 @@
 using namespace std;
 
 struct Node {
-    int x,y,w;
+    long long x,y,w;
 };
 
 struct cmp {
@@ -22,7 +22,7 @@ long long N,C;
 vector<Node> v;
 pair<long long,long long> tree[MAX_SIZE*4]; //first 는 weight , second 는 count
 
-void update_(int node,int start,int end,int idx,int num) {
+void update_(long long node,long long start,long long end,long long idx,long long num) {
     
 //    cout << start << " " << end << " " << idx << " " << num << "\n";
     if(idx<start or idx>end) {
@@ -41,7 +41,7 @@ void update_(int node,int start,int end,int idx,int num) {
     tree[node].second=tree[node*2].second+tree[node*2+1].second;
 }
 
-long long count_(int node,int start,int end,long long cnt) {
+long long count_(long long node,long long start,long long end,long long cnt) {
     
 //    cout << start << " " << end << " " << tree[node*2].second << " " << cnt << "\n";
     
@@ -57,7 +57,7 @@ long long count_(int node,int start,int end,long long cnt) {
     }
 }
 
-long long sum_(int node,int start,int end,int left,int right) {
+long long sum_(long long node,long long start,long long end,long long left,long long right) {
     if(left>end or right<start) {
         return 0;
     }
@@ -77,8 +77,8 @@ int main() {
     cout.tie(nullptr);
     
     cin >> N >> C;
-    for(int i=0;i<N;i++) {
-        int x,y,w;
+    for(long long i=0;i<N;i++) {
+        long long x,y,w;
         cin >> x >> y >> w;
         v.push_back({x,y,w});
     }
@@ -87,7 +87,7 @@ int main() {
     
     long long ret=0;
     
-    for(int i=0;i<N;i++) {
+    for(long long i=0;i<N;i++) {
         update_(1, 0, MAX_SIZE, v[i].x,v[i].w);
         
         if(i!=N-1 and v[i].y==v[i+1].y) {
