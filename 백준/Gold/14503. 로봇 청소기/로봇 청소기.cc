@@ -29,23 +29,6 @@ int is_check(int x,int y) {
     return 1; // 빈칸이 없는경우
 }
 
-int change_90(int d) {
-    
-    if(d==0) {
-        return 3;
-    }
-    else if(d==1) {
-        return 0;
-    }
-    else if(d==2) {
-        return 1;
-    }
-    else {
-        return 2;
-    }
-}
-
-
 void go_() {
     
     while(true) {
