@@ -1,0 +1,3 @@
+SELECT '/home/grep/src/' || f.board_id || '/' || f.file_id || f.file_name || f.file_ext AS FILE_PATH FROM USED_GOODS_FILE f WHERE f.BOARD_ID IN (SELECT a.BOARD_ID FROM USED_GOODS_BOARD a
+WHERE a.VIEWS=(SELECT MAX(b.VIEWS) FROM USED_GOODS_BOARD b))
+ORDER BY f.FILE_ID DESC
