@@ -2,39 +2,44 @@
 #include <vector>
 #include <queue>
 
-#define INF 10000000000000
+#define INF 1e12
 #define MAX_SIZE 100004
 using namespace std;
 
 long long N,M;
 long long check[MAX_SIZE];
+long long dist[MAX_SIZE];
 long long visited[MAX_SIZE];
-vector<long long> dist(MAX_SIZE,INF);
 vector<pair<long long,long long>> v[MAX_SIZE];
+
+struct cmp {
+    bool operator()(pair<long long,long long> &a,pair<long long,long long> &b) {
+        return a.second>b.second;
+    }
+};
 
 void Dijkstra(long long start) {
     
-    priority_queue<pair<long long,long long>,vector<pair<long long,long long>>,greater<pair<long long,long long>>> q;
+    priority_queue<pair<long long,long long>,vector<pair<long long,long long>>,cmp> q;
     dist[start]=0;
-    q.push({0,start});
+    q.push({start,0});
+    visited[start]=1;
     
     while(!q.empty()) {
-        long long weight=q.top().first;
-        start=q.top().second;
+        start=q.top().first;
+        long long weight=q.top().second;
         q.pop();
         
-//        cout << "# " << start << " " << weight << "\n";
-        
         if(dist[start]<weight) continue;
+//        cout << "# " << start << "\n";
         
         for(pair<long long,long long> temp:v[start]) {
             
 //            cout << temp.first << " " << temp.second << "\n";
-            if(check[temp.first] and temp.first!=N-1) continue;
             
             if(dist[start]+temp.second<dist[temp.first]) {
                 dist[temp.first]=dist[start]+temp.second;
-                q.push({dist[temp.first],temp.first});
+                q.push({temp.first,dist[temp.first]});
             }
         }
     }
@@ -45,15 +50,20 @@ int main() {
     cin.tie(nullptr);
     cout.tie(nullptr);
     
-    
     cin >> N >> M;
     for(long long i=0;i<N;i++) {
         cin >> check[i];
+        dist[i]=INF;
     }
+    check[N-1]=0;
     
     for(long long i=0;i<M;i++) {
         long long start,end,weight;
         cin >> start >> end >> weight;
+        
+        if(check[start] or check[end]) continue;
+        
+//        cout << start << " " << end << "\n";
         
         v[start].push_back({end,weight});
         v[end].push_back({start,weight});
@@ -66,3 +76,4 @@ int main() {
     
     return 0;
 }
+
