@@ -1,49 +1,40 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
+
 using namespace std;
 
 int N;
-vector<int> op;
-vector<int> nums;
+vector<int> v;
+int op[4];
+long long max_Ret=-10999999999;
+long long min_Ret=10999999999;
 
-int visited[14];
-int max_N=-987654321;
-int min_N=987654321;
-
-void comb_(int depth,int ret) {
-
-    
-    if(depth==N-1) {
-        if(max_N<ret) {
-            max_N=ret;
-        }
-        
-        if(min_N>ret) {
-            min_N=ret;
-        }
+void DFS_recur(int cnt,long long num) {
+    if(cnt==N-1) {
+        max_Ret=max(max_Ret,num);
+        min_Ret=min(min_Ret,num);
         return;
     }
     
-    for(int i=0;i<N-1;i++) {
-        
-        if(visited[i]==0) {
-            visited[i]=1;
-            if(op[i]==0) {
-                comb_(depth+1,ret+nums[depth+1]);
+    for(int i=0;i<4;i++) {
+        if(op[i]) {
+            op[i]-=1;
+            if(i==0) {
+                DFS_recur(cnt+1, num+v[cnt+1]);
             }
-            else if(op[i]==1) {
-                comb_(depth+1,ret-nums[depth+1]);
+            else if(i==1) {
+                DFS_recur(cnt+1, num-v[cnt+1]);
             }
-            else if(op[i]==2) {
-                comb_(depth+1,ret*nums[depth+1]);
+            else if(i==2) {
+                DFS_recur(cnt+1, num*v[cnt+1]);
             }
             else {
-                comb_(depth+1,ret/nums[depth+1]);
+                DFS_recur(cnt+1, num/v[cnt+1]);
             }
-            visited[i]=0;
+            op[i]+=1;
         }
     }
-    
 }
 int main() {
     ios_base::sync_with_stdio(false);
@@ -51,26 +42,17 @@ int main() {
     cout.tie(nullptr);
     
     cin >> N;
-    
     for(int i=0;i<N;i++) {
         int data;
         cin >> data;
-        nums.push_back(data);
+        v.push_back(data);
     }
-    
     for(int i=0;i<4;i++) {
-        int temp;
-        cin >> temp;
-        
-        for(int j=0;j<temp;j++) {
-            op.push_back(i);
-        }
+        cin >> op[i];
     }
-    
-    comb_(0,nums[0]);
-    
-    cout << max_N << "\n";
-    cout << min_N << "\n";
+    DFS_recur(0, v[0]);
+    cout << max_Ret << "\n";
+    cout << min_Ret << "\n";
     
     return 0;
 }
