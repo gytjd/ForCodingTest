@@ -1,84 +1,71 @@
 #include <iostream>
-#include <queue>
-#include <vector>
-#include <algorithm>
-
+#include <algorithm> 
+#include <queue> 
 using namespace std;
 
-int N,K;
-int dir[4][2]={{0,1},{1,0},{0,-1},{-1,0}};
-int arr[1004][1004];
-int visited[1004][1004];
-int apt_ret[34];
-vector<pair<int,int>> v;
+int N; 
+int K; 
+queue<pair<int,int>> q; 
+int m[1004][1004];
+int danzi[34];
+bool visited[1004][1004]; 
+int dir[4][2]={{0,1},{0,-1},{1,0},{-1,0}};
 
-bool cmp(pair<int,int> &a,pair<int,int> &b) {
-	if(a.second==b.second) {
-		return a.first>b.first;
+void bfs(int y, int x){
+	q.push({y, x}); 
+	int counter = 1;
+	int danziNo= m[y][x];
+	while(!q.empty()){
+		pair <int,int> p = q.front(); 
+		int curr_y= p.first;
+		int curr_x= p.second; 
+		q.pop(); 
+		for(int i = 0; i < 4; i++){
+			int dy= curr_y + dir[i][0];
+			int dx = curr_x + dir[i][1];
+			if(dy>=0 && dy < N && dx>=0 && dx < N){
+				if(m[dy][dx]==m[y][x] & visited[dy][dx]==0){
+					q.push({dy,dx});
+					visited[dy][dx]=1; 
+					counter++;
+				}
+			}
+		}
 	}
-	return a.second>b.second;
+	if(counter >= K){
+			danzi[danziNo] = danzi[danziNo] + 1;
+	}
 }
+void display(){
+	int largest= 0;
+	int pos =0;
+	for(int i = 0; i < 31; i++){
+		if(danzi[i]>=largest){
+			largest = danzi[i];
+			pos= i;
+		}
+	}
+	cout << pos;
 
-int BFS_iter(int x,int y,int num) {
-    int dx,dy;
-    int temp_Cnt=0;
-    
-    queue<pair<int,int>> q;
-    q.push({x,y});
-    visited[x][y]=1;
-    
-    while(!q.empty()) {
-        x=q.front().first;
-        y=q.front().second;
-        q.pop();
-        temp_Cnt+=1;
-        
-        for(int i=0;i<4;i++) {
-            dx=x+dir[i][0];
-            dy=y+dir[i][1];
-            
-            if(dx<0 or dx>=N or dy<0 or dy>=N) {
-                continue;
-            }
-            
-            if(arr[dx][dy]==num and visited[dx][dy]==0) {
-                visited[dx][dy]=1;
-                q.push({dx,dy});
-            }
-        }
-    }
-    
-    return temp_Cnt;
 }
 int main() {
+	cin >> N >> K;
+	for(int y =0; y < N; y++){
+		for(int x = 0; x < N; x++){
+			int M; 
+			cin >> M;
+			m[y][x]=M; 
+		}
+	}
 	
-    cin >> N >> K;
-    for(int i=0;i<N;i++) {
-        for(int j=0;j<N;j++) {
-            cin >> arr[i][j];
-        }
-    }
-    
-    for(int i=0;i<N;i++) {
-        for(int j=0;j<N;j++) {
-            if(visited[i][j]==0) {
-                int temp=BFS_iter(i,j,arr[i][j]);
-							
-                if(temp>=K) {
-                    apt_ret[arr[i][j]]+=1;
-                }
-            }
-        }
-    }
-    
-    for(int i=1;i<=30;i++) {
-			v.push_back({i,apt_ret[i]});
-    }
-	sort(v.begin(),v.end(),cmp);
-	// for(pair<int,int> temp:v) {
-	// 	cout << temp.first << " " << temp.second << "\n";
-	// }
-	cout << v[0].first << "\n";
-    
-  return 0;
+	for(int y =0; y < N; y++){
+		for(int x = 0; x < N; x++){
+			if(visited[y][x]==0){
+				visited[y][x] =1;
+				bfs(y,x);
+			}
+		}
+	}
+	display();
+	return 0;
 }
