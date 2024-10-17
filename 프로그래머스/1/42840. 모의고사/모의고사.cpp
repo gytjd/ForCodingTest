@@ -1,53 +1,61 @@
-#include <iostream>
 #include <string>
 #include <vector>
+#include <iostream>
 #include <algorithm>
 
 using namespace std;
 
-int curr_A,curr_B,curr_C;
-vector<int> A={1,2,3,4,5}; //5
-vector<int> B={2,1,2,3,2,4,2,5}; // 8
-vector<int> C={3,3,1,1,2,2,4,4,5,5}; // 10
-int retA,retB,retC;
+vector<int> first={1,2,3,4,5};
+vector<int> second={2,1,2,3,2,4,2,5};
+vector<int> third={3,3,1,1,2,2,4,4,5,5};
 
 vector<int> solution(vector<int> answers) {
     vector<int> answer;
     
-    for(int temp:answers) {
+    int first_Cnt=0;
+    int second_Cnt=0;
+    int third_Cnt=0;
+    
+    int first_Num=0;
+    int second_Num=0;
+    int third_Num=0;
+    
+    for(int i=0;i<answers.size();i++) {
         
-        cout << A[curr_A] << " " << B[curr_B] << " " << C[curr_C] << "\n";
-        
-        if(A[curr_A]==temp) {
-            retA+=1;
+        if(answers[i]==first[first_Cnt]) {
+            first_Num+=1;
         }
-        curr_A=(curr_A+1)%5;
         
-        if(B[curr_B]==temp) {
-            retB+=1;
+        if(answers[i]==second[second_Cnt]) {
+            second_Num+=1;
         }
-        curr_B=(curr_B+1)%8;
         
-        if(C[curr_C]==temp) {
-            retC+=1;
+        if(answers[i]==third[third_Cnt]) {
+            third_Num+=1;
         }
-        curr_C=(curr_C+1)%10;
+        
+        first_Cnt=(first_Cnt+1)%5;
+        second_Cnt=(second_Cnt+1)%8;
+        third_Cnt=(third_Cnt+1)%10;
     }
     
     vector<int> temp;
-    temp.push_back(retA);
-    temp.push_back(retB);
-    temp.push_back(retC);
+    temp.push_back(first_Num);
+    temp.push_back(second_Num);
+    temp.push_back(third_Num);
     
-    int max_Ret=max(max(retA,retB),retC);
-    
-    int curr_Temp=1;
-    for(int a:temp) {
-        if(a==max_Ret) {
-            answer.push_back(curr_Temp);
-        }
-        curr_Temp+=1;
+    int temp_Max=temp[0];
+    for(int i=1;i<3;i++) {
+        temp_Max=max(temp[i],temp_Max);
     }
+    
+    for(int i=0;i<3;i++) {
+        if(temp[i]==temp_Max) {
+            answer.push_back(i+1);
+        }
+    }
+    
+    
     
     return answer;
 }
