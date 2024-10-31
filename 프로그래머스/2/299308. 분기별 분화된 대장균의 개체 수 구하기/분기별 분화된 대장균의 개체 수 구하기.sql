@@ -1,0 +1,6 @@
+SELECT 
+    concat(QUARTER(DIFFERENTIATION_DATE),'Q') as QUARTER,count(*) as ECOLI_COUNT
+FROM 
+    ECOLI_DATA
+group by QUARTER
+order by QUARTER asc
