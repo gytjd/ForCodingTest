@@ -1,26 +1,13 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
+
 using namespace std;
 
 int N;
 vector<int> v;
-int visited[1004];
-int ret;
 
-void go_() {
-    
-    ret=v[0];
-    for(int i=1;i<N;i++) {
-        for(int j=0;j<i;j++) {
-            if(v[j]<v[i]) {
-                visited[i]=max(visited[i],v[i]+visited[j]);
-            }
-            ret=max(ret,visited[i]);
-        }
-    }
-    cout << ret << "\n";
-}
+int ret;
+int visited[1004];
 
 int main() {
     ios_base::sync_with_stdio(false);
@@ -32,10 +19,22 @@ int main() {
         int data;
         cin >> data;
         v.push_back(data);
-        visited[i]=data;
     }
     
-    go_();
+    for(int i=0;i<N;i++) {
+        visited[i]=v[i];
+        for(int j=0;j<i;j++) {
+            if(v[j]<v[i]) {
+                visited[i]=max(visited[i],visited[j]+v[i]);
+            }
+        }
+    }
+    
+    for(int i=0;i<N;i++) {
+        ret=max(ret,visited[i]);
+    }
+    
+    cout << ret << "\n";
     
     return 0;
 }
