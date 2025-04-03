@@ -1,14 +1,16 @@
 #include <iostream>
-#include <algorithm>
 #include <vector>
+#include <algorithm>
+
 using namespace std;
 
-int N,ret,maxPos,temp;
-int arr[1004];
-int dp[1004];
-int dir[1004];
+int N;
+int ret=1,retIdx=1;
 
-vector<int> tot;
+vector<int> v;
+vector<int> temp;
+int visited[1004];
+int dir[1004];
 
 int main() {
     ios_base::sync_with_stdio(false);
@@ -16,54 +18,45 @@ int main() {
     cout.tie(nullptr);
     
     cin >> N;
-    
-    for(int i=0;i<N;i++) {
-        cin >> arr[i];
+    v.push_back(0);
+    for(int i=1;i<=N;i++) {
+        int data;
+        cin >> data;
+        v.push_back(data);
     }
     
-    ret=dp[0];
-    dir[0]=0;
-    for(int i=1;i<N;i++) {
-        for(int j=0;j<i;j++) {
-            if(arr[i]>arr[j]) {
-                dp[i]=max(dp[j]+1,dp[i]);
+    for(int i=1;i<=N;i++) {
+        visited[i]=1;
+        for(int j=1;j<i;j++) {
+            if(v[j]<v[i]) {
                 
-                if(dp[i]==dp[j]+1) {
+                if(visited[i]<visited[j]+1) {
+                    visited[i]=visited[j]+1;
                     dir[i]=j;
                 }
-                ret=max(dp[i],ret);
                 
-                if(ret==dp[i]) {
-                    maxPos=i;
+                if(visited[i]>ret) {
+                    ret=visited[i];
+                    retIdx=i;
                 }
             }
         }
     }
     
-    cout << ret+1 << "\n";
     
-    if(maxPos==0) {
-        cout << arr[maxPos] << "\n";
+    while(dir[retIdx]!=0) {
+        temp.push_back(v[retIdx]);
+        retIdx=dir[retIdx];
     }
-    else {
-        while(maxPos!=0) {
-            temp=arr[maxPos];
-            tot.push_back(temp);
-            maxPos=dir[maxPos];
-        }
-        
-        if(arr[maxPos]<temp) {
-            tot.push_back(arr[maxPos]);
-        }
-
-        reverse(tot.begin(), tot.end());
-        
-        for(int a:tot) {
-            cout << a << " ";
-        }
-        cout << "\n";
-    }
+    temp.push_back(v[retIdx]);
     
-
+    reverse(temp.begin(), temp.end());
+    
+    cout << ret << "\n";
+    for(int data:temp) {
+        cout << data << " ";
+    }
+    cout << "\n";
+    
     return 0;
 }
