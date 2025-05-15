@@ -1,2 +1,2 @@
 -- 코드를 입력하세요
-select animal_id,name from animal_ins where name like "%el%" and animal_type="Dog" order by name
+SELECT i.animal_id,i.name from animal_ins i where i.name like "%el%" and i.animal_type="Dog" order by i.name
