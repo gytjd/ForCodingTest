@@ -1,2 +1,2 @@
 -- 코드를 입력하세요
-SELECT * from food_product where price = (select max(price) from food_product)
+SELECT * from food_product f order by f.price desc limit 1
