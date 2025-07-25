@@ -1,64 +1,72 @@
 #include <iostream>
-#include <vector>
+#include <string>
+
 using namespace std;
 
-int visited[9][9];
-int R,C,K;
+int ret;
+int R, C, K;
 
-vector<string> arr;
-int x1,y1,x2,y2;
-int dir[4][2]={{0,1},{1,0},{0,-1},{-1,0}};
+int dir[4][2] = { {0,1},{1,0},{0,-1},{-1,0} };
+char arr[10][10];
+int visited[10][10];
 
-int tot;
+void display_() {
+	for (int i = 0; i < R; i++) {
+		for (int j = 0; j < C; j++) {
+			cout << visited[i][j] << " ";
+		}
+		cout << "\n";
+	}
+	cout << "\n";
+}
 
-void DFS_recur(int x,int y,int depth) {
-    
-    int dx,dy;
-    
-    if(x==x2 and y==y2) {
-        
-        if(depth==K-1) {
-            tot+=1;
-        }
-        return;
-    }
-    
-    for(int i=0;i<4;i++) {
-        dx=x+dir[i][0];
-        dy=y+dir[i][1];
-        
-        if(dx<0 or dx>=R or dy<0 or dy>=C) {
-            continue;
-        }
-        
-        if(arr[dx][dy]=='.' and visited[dx][dy]==0) {
-            visited[dx][dy]=1;
-            DFS_recur(dx, dy,depth+1);
-            visited[dx][dy]=0;
-        }
-    }
+void DFS_recur(int x, int y, int curr) {
+
+	if (curr == K) {
+		if (x == 0 and y == C - 1) {
+			ret += 1;
+		}
+		return;
+	}
+
+	int dx, dy;
+	for (int i = 0; i < 4; i++) {
+		dx = x + dir[i][0];
+		dy = y + dir[i][1];
+
+		if (dx < 0 or dx >= R or dy < 0 or dy >= C or arr[dx][dy]=='T') {
+			continue;
+		}
+
+		if (visited[dx][dy] == 0) {
+			visited[dx][dy] = 1;
+			DFS_recur(dx, dy, curr + 1);
+			visited[dx][dy] = 0;
+		}
+	}
+
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr);
-    
-    cin >> R >> C >> K;
-    x1=R-1; y1=0;
-    x2=0; y2=C-1;
-    
-    for(int i=0;i<R;i++) {
-        string a;
-        cin >> a;
-        arr.push_back(a);
-    }
-    
-    visited[x1][y1]=1;
-    DFS_recur(x1, y1,0);
-    
-    cout << tot << "\n";
-    
-    return 0;
-}
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	cout.tie(nullptr);
 
+	cin >> R >> C >> K;
+
+	for (int i = 0; i < R; i++) {
+
+		string data;
+		cin >> data;
+		for (int j = 0; j < C; j++) {
+			arr[i][j] = data[j];
+		}
+	}
+
+	visited[R - 1][0] = 1;
+	DFS_recur(R - 1, 0, 1);
+
+	cout << ret << "\n";
+
+	return 0;
+}
