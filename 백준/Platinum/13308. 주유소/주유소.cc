@@ -4,12 +4,12 @@
 #include <algorithm>
 
 #define MAX_SIZE 2504
-#define INF 1e9+7
+#define INF 1e15+7
 
 using namespace std;
 
 struct Node {
-    int weight,curr,min_Prev;
+    long long weight,curr,min_Prev;
 };
 
 struct cmp {
@@ -18,22 +18,22 @@ struct cmp {
     }
 };
 
-int N,M;
-vector<int> price;
-vector<pair<int, int>> v[MAX_SIZE];
-int dist[MAX_SIZE][MAX_SIZE];
+long long N,M;
+vector<long long> price;
+vector<pair<long long, long long>> v[MAX_SIZE];
+long long dist[MAX_SIZE][MAX_SIZE];
 
 void init_() {
-    for(int i=0;i<MAX_SIZE;i++) {
-        for(int j=0;j<MAX_SIZE;j++) {
+    for(long long i=0;i<MAX_SIZE;i++) {
+        for(long long j=0;j<MAX_SIZE;j++) {
             dist[i][j]=INF;
         }
     }
 }
 
-void Dijkstra(int curr) {
-    int weight;
-    int min_Prev;
+void Dijkstra(long long curr) {
+    long long weight;
+    long long min_Prev;
     
     priority_queue<Node,vector<Node>,cmp> q;
     q.push({0,curr,price[curr]});
@@ -53,7 +53,7 @@ void Dijkstra(int curr) {
             break;
         }
         
-        for(pair<int, int> temp:v[curr]) {
+        for(pair<long long, long long> temp:v[curr]) {
 //            cout << temp.second << " " << weight+(temp.first*min_Prev) << "\n";
             
             if(weight+(temp.first*min_Prev)<dist[temp.second][min_Prev]) {
@@ -72,15 +72,15 @@ int main() {
     
     init_();
     price.push_back(0);
-    for(int i=0;i<N;i++) {
-        int data;
+    for(long long i=0;i<N;i++) {
+        long long data;
         cin >> data;
         price.push_back(data);
 
     }
     
-    for(int i=0;i<M;i++) {
-        int S,E,W;
+    for(long long i=0;i<M;i++) {
+        long long S,E,W;
         cin >> S >> E >> W;
         v[S].push_back({W,E});
         v[E].push_back({W,S});
