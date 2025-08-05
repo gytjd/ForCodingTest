@@ -1,43 +1,39 @@
 #include <iostream>
-#include <vector>
-#include <algorithm>
-#include <cmath>
 
 using namespace std;
 
 int N;
 
-bool is_Prime(int num) {
-    if(num<2) {
+bool find_Prime(int curr) {
+    
+    if(curr<2) {
         return false;
     }
     
-    for(int i=2;i*2<=num;i++) {
-        if(num%i==0) {
+    for(int i=2;i*2<=curr;i++) {
+        if(curr%i==0) {
             return false;
         }
     }
     return true;
 }
 
-void Prime_Recur(int curr,int temp) {
-    
-//    cout << curr << " " << temp << "\n";
+void DFS_recur(int curr,int temp) {
     
     if(curr==N) {
         cout << temp << "\n";
         return;
     }
-
+    
     for(int i=0;i<10;i++) {
-        int temp_Ret=temp*10+i;
-        
-        if(is_Prime(temp_Ret)) {
-            Prime_Recur(curr+1, temp_Ret);
+    
+        int temp_Num=temp*10+i;
+        if(find_Prime(temp_Num)) {
+            DFS_recur(curr+1, temp_Num);
         }
     }
+    
 }
-
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
@@ -45,7 +41,7 @@ int main() {
     
     cin >> N;
     
-    Prime_Recur(0, 0);
+    DFS_recur(0, 0);
     
     return 0;
 }
