@@ -1,55 +1,48 @@
 #include <iostream>
+#include <vector>
 #include <algorithm>
 #include <cmath>
-#include <vector>
-#include <cstring>
+#define MAX_SIZE 1e9
 
 using namespace std;
 
 int N;
-vector<pair<int, int>> v;
+vector<pair<int,int>> v;
 int visited[14];
+int ret=MAX_SIZE;
 
-long long ret=-1;
-void go_(long long S,long long B,int depth,int M) {
+void DFS_recur(int curr,int idx,int sho,int bit) {
     
-    if(depth==M) {
-        if(ret==-1) {
-            ret=abs(S-B);
-        }
-        else {
-            ret=min(ret, abs(S-B));
-        }
+    if(curr==N) {
+        ret=min(ret,abs(sho-bit));
         return;
     }
     
-    for(int i=0;i<N;i++) {
-        if(!visited[i]) {
+    for(int i=idx;i<N;i++) {
+        if(visited[i]==0) {
             visited[i]=1;
-            go_(S*v[i].first, B+v[i].second, depth+1, M);
+            DFS_recur(curr+1, i+1, sho*v[i].first, bit+v[i].second);
             visited[i]=0;
         }
     }
-    
-    
 }
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
     
     cin >> N;
+    
     for(int i=0;i<N;i++) {
         int start,end;
         cin >> start >> end;
         v.push_back({start,end});
     }
     
-    for(int i=1;i<=N;i++) {
-        memset(visited, 0, sizeof(visited));
-        go_(1, 0, 0, i);
+    for(int i=0;i<N;i++) {
+        DFS_recur(i, 0, 1, 0);
     }
-    
     cout << ret << "\n";
     
     return 0;
