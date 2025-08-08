@@ -1,87 +1,63 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <cstring>
+
 using namespace std;
 
 int N,M;
-vector<int> computer[10001];
-int visited[10001];
-vector<int> result;
+vector<int> v[10004];
+int visited[10004];
+vector<pair<int,int>> ret;
 
-void init_() {
-    int i;
-    for(i=0;i<10001;i++) {
-        visited[i]=0;
-    }
-}
-
-void BFS_com(int start) {
-    
+int BFS_iter(int start) {
+    int temp_Ret=0;
     queue<int> q;
-    visited[start]=1;
     q.push(start);
+    visited[start]=1;
     
     while(!q.empty()) {
-        int tempq=q.front();q.pop();
-        for(int i=0;i<computer[tempq].size();i++) {
-            
-            if(visited[computer[tempq][i]]==0) {
-                visited[computer[tempq][i]]=1;
-                q.push(computer[tempq][i]);
+        start=q.front();
+        q.pop();
+        temp_Ret+=1;
+        
+        for(int temp:v[start]) {
+            if(visited[temp]==0) {
+                visited[temp]=1;
+                q.push(temp);
             }
         }
     }
-}
-
-int count_visited() {
-    int count=0;
     
-    for(int i=1;i<=N;i++) {
-        if(visited[i]==1) {
-            count+=1;
-        }
-    }
-    
-    return count;
-}
-
-void go() {
-    int max_num=0;
-    for(int i=0;i<result.size();i++) {
-        if(max_num<result[i]) {
-            max_num=result[i];
-        }
-    }
-    
-    for(int i=0;i<result.size();i++) {
-        if(result[i]==max_num) {
-            cout << i+1 << " ";
-        }
-    }
-    cout << "\n";
+    return temp_Ret;
 }
 int main() {
     
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
-
+    
     cin >> N >> M;
-    
-    for (int i=0;i<M;i++) {
-        int tempA,tempB;
-        cin >> tempA >> tempB;
-        computer[tempB].push_back(tempA);
+    for(int i=0;i<M;i++) {
+        int end,start;
+        cin >> end >> start;
+        v[start].push_back(end);
     }
     
+    int temp_Num=0;
     for(int i=1;i<=N;i++) {
-        init_();
-        BFS_com(i);
-        
-        result.push_back(count_visited());
+        memset(visited, 0, sizeof(visited));
+        int temp_Ret=BFS_iter(i);
+        ret.push_back({temp_Ret,i});
+        temp_Num=max(temp_Num,temp_Ret);
     }
     
-    go();
+    for(int i=0;i<N;i++) {
+        if(ret[i].first==temp_Num) {
+            cout << ret[i].second << " ";
+        }
+    }
+    cout << "\n";
     
     return 0;
 }
