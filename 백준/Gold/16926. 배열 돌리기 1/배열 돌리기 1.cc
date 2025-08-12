@@ -2,68 +2,76 @@
 
 using namespace std;
 
-int N, M, R;
+int N,M,R;
 int arr[304][304];
 
 void display_() {
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < M; j++) {
+    
+    for(int i=0;i<N;i++) {
+        for(int j=0;j<M;j++) {
             cout << arr[i][j] << " ";
         }
         cout << "\n";
     }
+    cout << "\n";
 }
 
-void rotate_(int startN, int startM, int endN, int endM, int rotations) {
-    int perimeter = 2 * (endN - startN) + 2 * (endM - startM) - 4;
-    rotations %= perimeter;
+void rotate_(int startX,int startY,int endX,int endY) {
+    
+    int temp=arr[startX][startY];
+    
+    for(int i=startY;i<endY-1;i++) {
+        arr[startX][i]=arr[startX][i+1];
+    }
+    
+    for(int i=startX;i<endX-1;i++) {
+        arr[i][endY-1]=arr[i+1][endY-1];
+    }
+    
+    for(int i=endY-1;i>startY;i--) {
+        arr[endX-1][i]=arr[endX-1][i-1];
+    }
+    
+    for(int i=endX-1;i>startX;i--) {
+        arr[i][startY]=arr[i-1][startY];
+    }
+    arr[startX+1][startY]=temp;
+}
 
-    for (int r = 0; r < rotations; r++) {
-        int start_Num = arr[startN][startM];
-
+void go_() {
+    
+    int startX=0; int startY=0;
+    int endX=N; int endY=M;
+    
+    while(startX<endX and startY<endY) {
         
-        for (int i = startM; i < endM - 1; i++) {
-            arr[startN][i] = arr[startN][i + 1];
+        int cal=((endX-startX)*2+(endY-startY)*2)-4;
+        
+        for(int i=0;i<R%cal;i++) {
+            rotate_(startX, startY, endX, endY);
         }
         
-        for (int i = startN; i < endN - 1; i++) {
-            arr[i][endM - 1] = arr[i + 1][endM - 1];
-        }
-        
-        for (int i = endM - 1; i > startM; i--) {
-            arr[endN - 1][i] = arr[endN - 1][i - 1];
-        }
-        
-        for (int i = endN - 1; i > startN; i--) {
-            arr[i][startM] = arr[i - 1][startM];
-        }
-
-        arr[startN + 1][startM] = start_Num;
+        startX+=1; startY+=1;
+        endX-=1; endY-=1;
     }
 }
 
 int main() {
+    
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
-
+    
     cin >> N >> M >> R;
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < M; j++) {
+    
+    for(int i=0;i<N;i++) {
+        for(int j=0;j<M;j++) {
             cin >> arr[i][j];
         }
     }
-
-    int startN = 0, startM = 0, endN = N, endM = M;
-    while (startN < endN && startM < endM) {
-        rotate_(startN, startM, endN, endM, R);
-        startN++;
-        startM++;
-        endN--;
-        endM--;
-    }
-
+    
+    go_();
     display_();
+    
     return 0;
 }
-
