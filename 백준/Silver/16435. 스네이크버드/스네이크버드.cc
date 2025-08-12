@@ -1,12 +1,14 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+
 using namespace std;
 
 int N,M;
 vector<int> v;
 
 int main() {
+    
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
@@ -17,15 +19,13 @@ int main() {
         cin >> data;
         v.push_back(data);
     }
-    
-    sort(v.begin(), v.end());
+    sort(v.begin(),v.end());
     
     for(int i=0;i<N;i++) {
-        if(v[i]<=M) {
+        if(M>=v[i]) {
             M+=1;
         }
     }
-    
     cout << M << "\n";
     
     return 0;
