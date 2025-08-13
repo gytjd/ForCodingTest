@@ -3,24 +3,11 @@
 using namespace std;
 
 int N,M;
-
-bool check_Flag;
 int ret;
+bool check_Flag;
 int dir[3][2]={{-1,1},{0,1},{1,1}};
 char arr[10004][504];
 int visited[10004][504];
-
-void display_() {
-    
-    for(int i=0;i<N;i++) {
-        for(int j=0;j<M;j++) {
-            
-            cout << visited[i][j] << " ";
-        }
-        cout << "\n";
-    }
-    cout << "\n";
-}
 
 void DFS_recur(int x,int y) {
     
@@ -36,17 +23,16 @@ void DFS_recur(int x,int y) {
         dx=x+dir[i][0];
         dy=y+dir[i][1];
         
-        if(dx<0 or dx>=N or dy<0 or dy>=M or visited[dx][dy]) {
+        if(dx<0 or dx>=N or dy<0 or dy>=M or visited[dx][dy] or check_Flag) {
             continue;
         }
         
-        if(arr[dx][dy]=='.' and !check_Flag) {
+        if(arr[dx][dy]=='.') {
             visited[dx][dy]=1;
             DFS_recur(dx, dy);
         }
     }
 }
-
 int main() {
     
     ios_base::sync_with_stdio(false);
@@ -54,6 +40,7 @@ int main() {
     cout.tie(nullptr);
     
     cin >> N >> M;
+    
     for(int i=0;i<N;i++) {
         
         string data;
@@ -69,7 +56,6 @@ int main() {
             DFS_recur(i, 0);
         }
     }
-//    display_();
     
     cout << ret << "\n";
     
