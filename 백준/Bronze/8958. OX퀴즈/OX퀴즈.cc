@@ -1,31 +1,34 @@
 #include <iostream>
-#include <string>
 
 using namespace std;
 
+int N;
+
 int main() {
-    int i,j;
-    int n;
-    cin >> n;
     
-    for(i=0;i<n;i++) {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    
+    cin >> N;
+    for(int i=0;i<N;i++) {
         
-        int count=1;
-        int result=0;
-        string a;
-        cin >> a;
+        int ret=0;
+        int cnt=0;
+        string temp;
+        cin >> temp;
         
-        for(j=0;j<a.size();j++) {
+        for(int j=0;j<temp.size();j++) {
             
-            if(a[j]=='O') {
-                result+=count;
-                count++;
-            }
-            else {
-                count=1;
+            if(temp[j]=='O') {
+                cnt+=1;
+                ret+=cnt;
+            } else {
+                cnt=0;
             }
         }
-        cout << result << "\n";
+        
+        cout << ret << "\n";
     }
     
     return 0;
