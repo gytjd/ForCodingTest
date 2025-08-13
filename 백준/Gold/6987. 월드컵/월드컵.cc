@@ -1,12 +1,11 @@
 #include <iostream>
-#include <unordered_map>
 #include <vector>
 
 using namespace std;
 
-int answer;
-int visited[6][3];
+int ret;
 int arr[6][3];
+int visited[6][3];
 vector<pair<int,int>> v;
 
 void init_() {
@@ -18,44 +17,64 @@ void init_() {
     }
 }
 
-void DFS_recur(int cnt) {
+void display_() {
     
-    if(cnt==15) {
-        for(int i=0;i<6;i++) {
-            for(int j=0;j<3;j++) {
-                if(visited[i][j]!=arr[i][j]) {
-                    return;
-                }
+    for(int i=0;i<6;i++) {
+        for(int j=0;j<3;j++) {
+            cout << visited[i][j] << " ";
+        }
+    }
+    cout << "\n";
+}
+
+bool cal_() {
+    
+    for(int i=0;i<6;i++) {
+        for(int j=0;j<3;j++) {
+            if(arr[i][j]!=visited[i][j]) {
+                return false;
             }
         }
-        answer=1;
+    }
+    return true;
+}
+
+void DFS_recur(int curr) {
+    
+    if(ret) {
         return;
     }
     
+    if(curr==15) {
+        
+        if(cal_()) {
+            ret=1;
+        }
+        return;
+    }
     
-    // A 가 이김 B가 짐
-    visited[v[cnt].first][0]+=1;
-    visited[v[cnt].second][2]+=1;
-    DFS_recur(cnt+1);
-    visited[v[cnt].first][0]-=1;
-    visited[v[cnt].second][2]-=1;
+    visited[v[curr].first][0]+=1; // 승리
+    visited[v[curr].second][2]+=1;
+    DFS_recur(curr+1);
+    visited[v[curr].first][0]-=1;
+    visited[v[curr].second][2]-=1;
     
-    // A B 무승부
-    visited[v[cnt].first][1]+=1;
-    visited[v[cnt].second][1]+=1;
-    DFS_recur(cnt+1);
-    visited[v[cnt].first][1]-=1;
-    visited[v[cnt].second][1]-=1;
     
-    // A가 짐 B가 이김
-    visited[v[cnt].first][2]+=1;
-    visited[v[cnt].second][0]+=1;
-    DFS_recur(cnt+1);
-    visited[v[cnt].first][2]-=1;
-    visited[v[cnt].second][0]-=1;
+    visited[v[curr].first][1]+=1; // 무승부
+    visited[v[curr].second][1]+=1;
+    DFS_recur(curr+1);
+    visited[v[curr].first][1]-=1;
+    visited[v[curr].second][1]-=1;
+    
+    
+    visited[v[curr].first][2]+=1; // 패배
+    visited[v[curr].second][0]+=1;
+    DFS_recur(curr+1);
+    visited[v[curr].first][2]-=1;
+    visited[v[curr].second][0]-=1;
 }
-
 int main() {
+    
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
@@ -66,18 +85,12 @@ int main() {
         
         for(int j=0;j<6;j++) {
             for(int k=0;k<3;k++) {
-                visited[j][k]=0;
                 cin >> arr[j][k];
             }
         }
-        
-        answer=0;
+        ret=0;
         DFS_recur(0);
-        
-        cout << answer << " ";
+        cout << ret << " ";
     }
-
-    
-    return 0;
+    cout << "\n";
 }
-
