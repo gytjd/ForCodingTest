@@ -1,47 +1,33 @@
 #include <iostream>
 #include <queue>
-#include <vector>
+#include <cstring>
 
 using namespace std;
 
 int N,M;
-int visited[100][100];
-int temp[100][100];
-int dir[4][2] = {{0,1},{1,0},{0,-1},{-1,0}};
+int ret;
+int retCnt;
+int dir[4][2]={{0,1},{1,0},{0,-1},{-1,0}};
+int arr[104][104];
+int visited[104][104];
+vector<pair<int,int>> v;
 
 void display_() {
-    int i,j;
-    cout << "\n";
-
-    for(i=0;i<N;i++) {
-        for(j=0;j<M;j++) {
-            cout << temp[i][j] << " ";
-        }
-        cout << "\n";
-    }
-    
-    cout << "\n";
-    for(i=0;i<N;i++) {
-        for(j=0;j<M;j++) {
-            cout << visited[i][j] << " ";
-        }
-        cout << "\n";
-    }
-}
-
-void init_(int x,int y) {
     
     for(int i=0;i<N;i++) {
         for(int j=0;j<M;j++) {
-            visited[i][j]=0;
+            cout << arr[i][j] << " ";
         }
+        cout << "\n";
     }
+    cout << "\n";
+}
+
+void BFS_iter(int x,int y) {
     
     int dx,dy;
-    
-    queue<pair<int, int>> q;
-    q.push(make_pair(x, y));
-    
+    queue<pair<int,int>> q;
+    q.push({x,y});
     visited[x][y]=1;
     
     while(!q.empty()) {
@@ -53,77 +39,35 @@ void init_(int x,int y) {
             dx=x+dir[i][0];
             dy=y+dir[i][1];
             
-            if(dx<0 or dx>=N or dy<0 or dy>=M) {
+            if(dx<0 or dx>=N or dy<0 or dy>=M or visited[dx][dy]) {
                 continue;
             }
             
-            if(temp[dx][dy]==0 and visited[dx][dy]==0) {
-                visited[dx][dy]=1;
-                q.push(make_pair(dx, dy));
-            }
+            visited[dx][dy]=1;
+            if(arr[dx][dy]) v.push_back({dx,dy});
+            else q.push({dx,dy});
         }
     }
 }
 
-int check_Cheeze(int x,int y) {
+void go_() {
     
-    int i;
-    int dx,dy;
-    
-    for(i=0;i<4;i++) {
-        dx=x+dir[i][0];
-        dy=y+dir[i][1];
+    while(true) {
         
-        if(visited[dx][dy]==1) {
-            return 1;
+        v.clear();
+        memset(visited,0,sizeof(visited));
+        BFS_iter(0, 0);
+        if(v.empty()) break;
+        
+        for(pair<int,int> temp:v) {
+            arr[temp.first][temp.second]=0;
         }
+        ret+=1;
+        retCnt=v.size();
     }
-    
-    return 0;
 }
 
-int count_() {
-    int i,j;
-    int count=0;
-    
-    for(i=0;i<N;i++) {
-        for(j=0;j<M;j++) {
-            if(temp[i][j]==1) {
-                count+=1;
-            }
-        }
-    }
-    
-    return count;
-}
-
-void go() {
-    
-    vector<int> ret;
-    int count=0;
-    
-    while(count_()!=0) {
-        
-        count+=1;
-        ret.push_back(count_());
-        
-        
-        init_(0,0);
-
-        
-        for(int i=0;i<N;i++) {
-            for(int j=0;j<M;j++) {
-                if(temp[i][j]==1 and check_Cheeze(i, j)==1) {
-                    temp[i][j]=0;
-                }
-            }
-        }
-    }
-    
-    cout << count << "\n";
-    cout << ret[count-1] << "\n";
-}
-int main () {
+int main() {
     
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
@@ -133,11 +77,13 @@ int main () {
     
     for(int i=0;i<N;i++) {
         for(int j=0;j<M;j++) {
-            cin >> temp[i][j];
+            cin >> arr[i][j];
         }
     }
     
-    go();
+    go_();
+    cout << ret << "\n";
+    cout << retCnt << "\n";
     
     return 0;
 }
