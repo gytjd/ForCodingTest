@@ -1,25 +1,18 @@
 #include <iostream>
-#include <vector>
-#include <queue>
+
 using namespace std;
 
-
-vector<string> arr;
 int N,M;
+int ret;
 int dir[4][2]={{0,1},{1,0},{0,-1},{-1,0}};
+char arr[24][24];
+int check[34];
 
-int visited[26];
-int max_depth=-987654321;
-
-void DFS_recur(int x,int y,int depth) {
+void DFS_recur(int curr,int x,int y) {
+    
+    ret=max(ret,curr);
     
     int dx,dy;
-
-    
-    if(depth>max_depth) {
-        max_depth=depth;
-    }
-    
     for(int i=0;i<4;i++) {
         dx=x+dir[i][0];
         dy=y+dir[i][1];
@@ -28,31 +21,35 @@ void DFS_recur(int x,int y,int depth) {
             continue;
         }
         
-        if(visited[arr[dx][dy]-65]==0) {
-            visited[arr[dx][dy]-65]=1;
-            DFS_recur(dx, dy,depth+1);
-            visited[arr[dx][dy]-65]=0;
+        if(check[arr[dx][dy]-65]==0) {
+            check[arr[dx][dy]-65]=1;
+            DFS_recur(curr+1, dx, dy);
+            check[arr[dx][dy]-65]=0;
         }
+        
     }
-
 }
 
 int main() {
+    
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
     
     cin >> N >> M;
-    
     for(int i=0;i<N;i++) {
-        string a;
-        cin >> a;
-        arr.push_back(a);
+        string data;
+        cin >> data;
+        
+        for(int j=0;j<M;j++) {
+            arr[i][j]=data[j];
+        }
     }
-
-    visited[arr[0][0]-65]=1;
-    DFS_recur(0, 0, 1);
-    cout << max_depth << "\n";
+    
+    check[arr[0][0]-65]=1;
+    DFS_recur(0, 0, 0);
+    
+    cout << ret+1 << "\n";
     
     return 0;
 }
