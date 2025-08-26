@@ -1,103 +1,75 @@
 #include <iostream>
-#include <vector>
+#include <algorithm>
+#include <cmath>
 
 using namespace std;
 
-vector<pair<int, int>> house;
-vector<pair<int, int>> chicken;
-
-vector<pair<int, int>> result_T;
-
 int N,M;
-int visited[13];
+int ret=987654321;
+vector<pair<int,int>> v;
+vector<pair<int,int>> w;
+int visited[14];
 
-int total;
-
-int calculate_chicken() {
+int Cal_() {
     
-    int result=0;
-    
-    for(int i=0;i<house.size();i++) {
-        int temp_result=0;
-        for(int j=0;j<result_T.size();j++) {
-            
-            int dir=abs(result_T[j].first-house[i].first)+abs(result_T[j].second-house[i].second);
-            
-            if(temp_result==0) {
-                temp_result=dir;
-            }
-            else {
-                if(temp_result>dir) {
-                    temp_result=dir;
-                }
-            }
-            
-        }
+    int tempHome=0;
+    for(int i=0;i<v.size();i++) {
         
-        result+=temp_result;
+        int currX=v[i].first;
+        int currY=v[i].second;
+        
+        int tempRet=987654321;
+        for(int j=0;j<w.size();j++) {
+            if(visited[j]) {
+                int tempX=w[j].first;
+                int tempY=w[j].second;
+                tempRet=min(tempRet,abs(currX-tempX)+abs(currY-tempY));
+            }
+        }
+        tempHome+=tempRet;
     }
-    
-    return result;
+    return tempHome;
 }
 
-void DFS_iter(int start,int count) {
-
-    if(result_T.size()==M) {
-        
-        if(total==0) {
-            total=calculate_chicken();
-        }
-        else {
-            int temp_ret=calculate_chicken();
-            if(total>temp_ret) {
-                total=temp_ret;
-            }
-        }
+void Combi_Recur(int curr,int idx) {
+    
+    if(curr==M) {
+        ret=min(ret,Cal_());
         return;
     }
     
-    for(int i=start;i<chicken.size();i++) {
+    for(int i=idx;i<w.size();i++) {
+        
         if(visited[i]==0) {
             visited[i]=1;
-            result_T.push_back(chicken[i]);
-            
-            DFS_iter(i+1, count+1);
-            
+            Combi_Recur(curr+1, i+1);
             visited[i]=0;
-            result_T.pop_back();
         }
     }
-    
-    
-    
-    
-    
 }
- 
+
 int main() {
+    
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     cout.tie(nullptr);
     
     cin >> N >> M;
+    
     for(int i=0;i<N;i++) {
         for(int j=0;j<N;j++) {
-            
-            int idx;
-            cin >> idx;
-            if(idx==1) {
-                house.push_back(make_pair(i, j));
-            }
-            
-            if(idx==2) {
-                chicken.push_back(make_pair(i, j));
+            int data;
+            cin >> data;
+            if(data==2) {
+                w.push_back({i,j});
+            } else if(data==1) {
+                v.push_back({i,j});
             }
         }
     }
     
-    DFS_iter(0, 0);
-    
-    cout << total << "\n";
+    Combi_Recur(0, 0);
+    cout << ret << "\n";
     
     return 0;
 }
