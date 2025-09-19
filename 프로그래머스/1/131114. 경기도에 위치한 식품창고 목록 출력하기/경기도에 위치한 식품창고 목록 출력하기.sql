@@ -1,5 +1,4 @@
--- 코드를 입력하세요
-select warehouse_id,warehouse_name,address,COALESCE(freezer_yn, 'N') AS freezer_yn
-from food_warehouse
-where warehouse_name like '%경기%'
-order by warehouse_id
+select f.warehouse_id,f.warehouse_name,f.address,coalesce(f.freezer_yn,'N') as freezer_yn
+from food_warehouse f
+where f.warehouse_name like "%경기%"
+order by f.warehouse_id
