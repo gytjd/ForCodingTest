@@ -1,2 +1,3 @@
--- 코드를 입력하세요
-SELECT * from food_product f order by f.price desc limit 1
+select f.product_id,f.product_name,f.product_cd,f.category,f.price
+from food_product f
+where f.price = (select max(price) from food_product);
